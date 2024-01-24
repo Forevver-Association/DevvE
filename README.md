@@ -1,6 +1,6 @@
-# ERC20 Tokens
+# ERC20 Token
 
-DevvE is an ERC20 tokens implemented using Solidity. The token contract includes wallet-based minting permissions with individual and global minting limits. The contracts are designed to be upgradeable, so you can upgrade the smart contracts without affecting the state (balances) of the tokens.
+DevvE is an ERC20 token implemented using Solidity. The token contract includes wallet-based minting permissions with individual and global minting limits. The contracts are designed to be upgradeable, so you can upgrade the smart contracts without affecting the state (balances) of the tokens.
 
 ## Table of Contents
 
