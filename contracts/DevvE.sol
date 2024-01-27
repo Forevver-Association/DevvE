@@ -16,7 +16,7 @@ contract DevvE is ERC20Upgradeable {
     address public constant CONTRACT_ADMIN = 0x37d0A81aD6A85945Db59E33C40cEa53275aC5694;
 
     function initialize() public initializer {
-        __ERC20_init("DevvE", "DEVV");
+        __ERC20_init("DevvE", "DEVVE");
         _explicitMinter[DEVVIO_MINTER] = true;
         _explicitMinter[FOREVVER_MINTER] = true;
         _minterLimit[DEVVIO_MINTER] = DEVVIO_LIMIT;
