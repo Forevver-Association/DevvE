@@ -8,6 +8,7 @@ contract DevvE is ERC20Upgradeable {
     mapping(address => uint256) internal _minterLimit;
     mapping(address => uint256) internal _mintedAmount;
     mapping(address => bool) internal _explicitMinter;
+    //Limit constants are integers (multplied by 10^18 in the mint() function)
     uint256 public constant GLOBAL_LIMIT = 300000000;
     address public constant FOREVVER_MINTER = 0xcC812569809Db07CF922171B1e7861a84e24839a;
     uint256 public constant FOREVVER_LIMIT = 150000000;
@@ -23,10 +24,6 @@ contract DevvE is ERC20Upgradeable {
         _minterLimit[FOREVVER_MINTER] = FOREVVER_LIMIT;
         _mintedAmount[DEVVIO_MINTER] = 0;
         _mintedAmount[FOREVVER_MINTER] = 0;
-    }
-
-    function decimals() public pure override returns (uint8) {
-        return 0;
     }
 
     function multiTransfer(address[] memory recipients, uint256[] memory amounts) public {
@@ -47,13 +44,6 @@ contract DevvE is ERC20Upgradeable {
         require(_explicitMinter[msg.sender], "Caller does not have the minter role");
         require(recipients.length > 0, "No mint recipients.");
         require(recipients.length == amounts.length, "Recipient/Amount mismatch.");
-        uint256 totalAmount = 0;
-        for (uint256 i = 0; i < recipients.length; i++) {
-            require(amounts[i] > 0, "Invalid amount (zero or less).");
-            totalAmount += amounts[i];
-        }
-        require(totalSupply() + totalAmount <= GLOBAL_LIMIT, "Minting this amount would exceed the global limit");
-        require(_mintedAmount[msg.sender] + totalAmount <= _minterLimit[msg.sender], "Mint amount exceeds the caller's minting limit");
         for (uint256 i = 0; i < recipients.length; i++) {
             mint(recipients[i], amounts[i]);
         }
@@ -63,15 +53,15 @@ contract DevvE is ERC20Upgradeable {
         require(to != address(0), "Mint to the zero address");
         require(_explicitMinter[msg.sender], "Caller does not have the minter role");
         require(amount > 0, "Invalid amount (zero or less).");
-        require(totalSupply() + amount <= GLOBAL_LIMIT, "Minting this amount would exceed the global limit");
-        require(_mintedAmount[msg.sender] + amount <= _minterLimit[msg.sender], "Mint amount exceeds the caller's minting limit");
+        require(totalSupply() + amount <= GLOBAL_LIMIT*(10**18), "Minting this amount would exceed the global limit");
+        require(_mintedAmount[msg.sender] + amount <= _minterLimit[msg.sender]*(10**18), "Mint amount exceeds the caller's minting limit");
 
         _mintedAmount[msg.sender] += amount;
         _mint(to, amount);
     }
 
     function getMinterLimit(address minter) external view returns (uint256) {
-        return _minterLimit[minter];
+        return _minterLimit[minter]*(10**18);
     }
 
     function getMintedAmountBy(address minter) external view returns (uint256) {
